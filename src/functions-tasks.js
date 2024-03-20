@@ -66,9 +66,14 @@ function getFunctionBody(func) {
  *  ]) => [0, 1, 2]
  *
  */
-function getArgumentsCount(/* funcs */) {
-  throw new Error('Not implemented');
+function getArgumentsCount(funcs) {
+  return funcs.map((item) => item.length);
+  // return funcs.map((item, index) => index); // случайно сработало, тесты совпали с индексом
 }
+
+// function getArgumentsCount(/* funcs */) {
+//   throw new Error('Not implemented');
+// }
 
 /**
  * Returns the math power function with the specified exponent
@@ -86,9 +91,15 @@ function getArgumentsCount(/* funcs */) {
  *   power05(16) => 4
  *
  */
-function getPowerFunction(/* exponent */) {
-  throw new Error('Not implemented');
+function getPowerFunction(exponent) {
+  return (x) => {
+    return x ** exponent;
+  };
 }
+
+// function getPowerFunction(/* exponent */) {
+//   throw new Error('Not implemented');
+// }
 
 /**
  * Returns the polynom function of one argument based on specified coefficients.
