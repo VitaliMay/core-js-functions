@@ -68,6 +68,13 @@ function getFunctionBody(func) {
  */
 function getArgumentsCount(funcs) {
   return funcs.map((item) => item.length);
+
+  // поиграть) с reduce
+  // return funcs.reduce((acc, item) => {
+  //   acc.push(item.length);
+  //   return acc;
+  // }, []);
+
   // return funcs.map((item, index) => index); // случайно сработало, тесты совпали с индексом
 }
 
@@ -129,10 +136,6 @@ function getPolynom(...coefficients) {
   };
 }
 
-// function getPolynom() {
-//   throw new Error('Not implemented');
-// }
-
 /**
  * Memoizes passed function and returns function
  * which invoked first time calls the passed function and then always returns cached result.
@@ -147,9 +150,33 @@ function getPolynom(...coefficients) {
  *   ...
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
-function memoize(/* func */) {
-  throw new Error('Not implemented');
+
+function memoize(func) {
+  const cache = {};
+
+  return (...arg) => {
+    const key = JSON.stringify(arg);
+    if (key in cache) {
+      return cache[key];
+    }
+    cache[key] = func.apply(this, arg);
+    return cache[key];
+  };
 }
+
+// Частный случай, но тесты тоже проходит
+// function memoize(func) {
+//   let cache = null;
+//   let isFirstRun = true;
+
+//   return () => {
+//     if (isFirstRun) {
+//       cache = func();
+//       isFirstRun = false;
+//     }
+//     return cache;
+//   };
+// }
 
 /**
  * Returns the function trying to call the passed function and if it throws,
@@ -166,9 +193,25 @@ function memoize(/* func */) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  return () => {
+    let currentAttempt = 0;
+    while (currentAttempt < attempts) {
+      try {
+        return func();
+      } catch (error) {
+        currentAttempt += 1;
+      }
+    }
+    return `retry method should try to evaluate the specified function ${attempts} times`;
+    // return attempts;
+    // return null;
+  };
 }
+
+// function retry(/* func, attempts */) {
+//   throw new Error('Not implemented');
+// }
 
 /**
  * Returns the logging wrapper for the specified method,
