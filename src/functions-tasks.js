@@ -236,8 +236,24 @@ function retry(func, attempts) {
  * cos(3.141592653589793) ends
  *
  */
-function logger(/* func, logFunc */) {
-  throw new Error('Not implemented');
+function logger(func, logFunc) {
+  return (...args) => {
+    const argString = args.map((item) => JSON.stringify(item)).join(',');
+    // const argString = args.reduce((acc, arg, index) => {
+    //   const argStr = JSON.stringify(arg);
+    //   if (index !== 0) {
+    //     return `${acc},${argStr}`;
+    //   }
+    //   return argStr;
+    // }, '');
+    const functionName = func.name || 'anonymous function';
+
+    logFunc(`${functionName}(${argString}) starts`);
+    const result = func(...args);
+    logFunc(`${functionName}(${argString}) ends`);
+
+    return result;
+  };
 }
 
 /**
@@ -253,9 +269,15 @@ function logger(/* func, logFunc */) {
  *   partialUsingArguments(fn, 'a','b','c')('d') => 'abcd'
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
-function partialUsingArguments(/* fn, ...args1 */) {
-  throw new Error('Not implemented');
+function partialUsingArguments(fn, ...args1) {
+  return (...args2) => {
+    return fn(...args1, ...args2);
+  };
 }
+
+// function partialUsingArguments(/* fn, ...args1 */) {
+//   throw new Error('Not implemented');
+// }
 
 /**
  * Returns the id generator function that returns next integer starting
@@ -274,9 +296,32 @@ function partialUsingArguments(/* fn, ...args1 */) {
  *   getId4() => 7
  *   getId10() => 11
  */
-function getIdGeneratorFunction(/* startFrom */) {
-  throw new Error('Not implemented');
+
+function getIdGeneratorFunction(startFrom) {
+  let currentId = startFrom;
+  let flag = true;
+  return () => {
+    if (flag) {
+      flag = false;
+    } else {
+      currentId += 1;
+    }
+    return currentId;
+  };
 }
+
+// function getIdGeneratorFunction(startFrom) {
+//   let currentId = startFrom;
+//   let flag = true;
+//   return () => {
+//     if (flag) {
+//       flag = false;
+//       return currentId;
+//     }
+//     currentId += 1;
+//     return currentId;
+//   };
+// }
 
 module.exports = {
   getCurrentFunctionName,
